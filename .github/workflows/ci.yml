@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  TF_ROOT: terraform
+  TF_ROOT: .
   TF_COMMAND: plan
 
 jobs:
