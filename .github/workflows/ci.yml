@@ -5,12 +5,8 @@ on:
     branches: [ main ]
   workflow_dispatch: {}
 
-permissions:
-  id-token: write
-  contents: read
-
 env:
-  TF_ROOT: .
+  TF_ROOT: terraform
   TF_COMMAND: plan
 
 jobs:
@@ -34,7 +30,9 @@ jobs:
 
       - name: Init Terraform
         working-directory: ${{ env.TF_ROOT }}
-        run: terraform init -input=false
+        run: |
+          rm -rf .terraform
+          terraform init -input=false -upgrade
 
       - name: Terraform Plan
         working-directory: ${{ env.TF_ROOT }}
@@ -71,6 +69,12 @@ jobs:
         with:
           name: tfplan
           path: ${{ env.TF_ROOT }}
+
+      - name: Init Terraform
+        working-directory: ${{ env.TF_ROOT }}
+        run: |
+          rm -rf .terraform
+          terraform init -input=false -upgrade
 
       - name: Apply Terraform
         working-directory: ${{ env.TF_ROOT }}
