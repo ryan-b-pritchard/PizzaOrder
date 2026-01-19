@@ -1,5 +1,9 @@
 name: CI/Terraform
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   push:
     branches: [ main ]
@@ -13,6 +17,9 @@ jobs:
   plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,6 +54,9 @@ jobs:
   apply:
     name: Terraform Apply (manual)
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: plan
     if: github.event_name == 'workflow_dispatch'
     steps:
