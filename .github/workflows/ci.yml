@@ -29,6 +29,17 @@ jobs:
         with:
           terraform_version: '1.5.0'
 
+      - name: Dump OIDC ID token claims (debug only)
+        shell: bash
+        run: |
+          echo "Requesting id-token for audience=sts.amazonaws.com"
+          # GitHub provides ACTIONS_ID_TOKEN_REQUEST_URL and ACTIONS_ID_TOKEN_REQUEST_TOKEN
+          TOKEN_JSON=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com")
+          TOKEN=$(echo "$TOKEN_JSON" | jq -r .value)
+          echo "token present: ${TOKEN:+yes}"
+          echo "Decoded claims:"
+          echo "$TOKEN" | cut -d '.' -f2 | base64 --decode 2>/dev/null | jq .
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v2
         with:
